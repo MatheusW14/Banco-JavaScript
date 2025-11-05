@@ -262,56 +262,64 @@ class Conta{
 }
 
 
+/*
+ * =================================================================
+ * 🚀 INÍCIO DA SIMULAÇÃO
+ * =================================================================
+ */
 console.log("--- INICIANDO SIMULAÇÃO BANCÁRIA ---");
 
-// 1. Criar o banco (o "Controlador")
+// -----------------------------------------------------------------
+console.log("\n===== ETAPA 1: CONFIGURAÇÃO DO BANCO =====");
+// -----------------------------------------------------------------
 const jsBanco = new Banco("JS Bank");
-
-// 2. Criar as Agências (elas se registram no banco)
 const agCentro = new Agencia("001 - Centro", jsBanco);
 const agBairro = new Agencia("002 - Bairro", jsBanco);
 
-// 3. Criar Clientes (eles se registram na sua agência)
+// -----------------------------------------------------------------
+console.log("\n===== ETAPA 2: REGISTRO DE CLIENTES E CONTAS =====");
+// -----------------------------------------------------------------
 const alice = new Cliente("Alice Silva", "111.111.111-11", agCentro);
 const beto = new Cliente("Beto Souza", "222.222.222-22", agBairro);
-// Bônus: Cliente na mesma agência
 const carlos = new Cliente("Carlos Dias", "333.333.333-33", agCentro);
 
-
-// 4. Criar Contas (elas se registram na agência)
+// As contas são criadas e logadas no console automaticamente
 const contaAlice = new Conta(alice, agCentro); // Conta 1
 const contaBeto = new Conta(beto, agBairro); // Conta 2
 const contaCarlos = new Conta(carlos, agCentro); // Conta 3
 
-// 5. VISUALIZAR A ESTRUTURA (Seu objetivo!)
+// -----------------------------------------------------------------
+// 5. VISUALIZAR A ESTRUTURA INICIAL
+// -----------------------------------------------------------------
+// (Este método já imprime seu próprio título)
 jsBanco.visualizarEstrutura();
 
-// O RESTO DA SIMULAÇÃO (6 a 10) FUNCIONA EXATAMENTE IGUAL
-// Você não precisa mudar uma linha sequer das suas transações!
-console.log("\n--- INÍCIO DAS TRANSAÇÕES ---");
+// -----------------------------------------------------------------
+console.log("\n===== ETAPA 3: EXECUÇÃO DE TRANSAÇÕES =====");
+// -----------------------------------------------------------------
+console.log("--- (Iniciando depósitos...) ---");
+jsBanco.depositar(1, 500);    // Alice (Conta 1)
+jsBanco.depositar(2, 2500);   // Beto (Conta 2) (Aciona o BC)
+jsBanco.depositar(3, 700);    // Carlos (Conta 3)
 
-// 6. Depósitos
-jsBanco.depositar(1, 500);    // Alice (Conta 1)
-jsBanco.depositar(2, 2500);   // Beto (Conta 2) (Aciona o BC)
-jsBanco.depositar(3, 700);    // Carlos (Conta 3)
+console.log("\n--- (Iniciando saques...) ---");
+jsBanco.sacar(1, 100);       // Alice (Conta 1)
 
-// 7. Saque
-jsBanco.sacar(1, 100);       // Alice (Conta 1)
-
-// 8. Transferência
+console.log("\n--- (Iniciando transferências...) ---");
 jsBanco.transferir(2, 1, 1500); // Beto (2) -> Alice (1) (Aciona o BC)
 
-// 9. Tentativa de saque com saldo insuficiente
+console.log("\n--- (Testando saque com saldo insuficiente...) ---");
 jsBanco.sacar(1, 5000); // Alice (1)
 
-console.log("\n--- FIM DAS TRANSAÇÕES ---");
-
-// 10. Gerar Extratos
+// -----------------------------------------------------------------
+console.log("\n===== ETAPA 4: GERAÇÃO DE RELATÓRIOS =====");
+// -----------------------------------------------------------------
+console.log("--- (Gerando extratos individuais...) ---");
 jsBanco.consultarExtrato(1); // Extrato de Alice
 jsBanco.consultarExtrato(2); // Extrato de Beto
 jsBanco.consultarExtrato(3); // Extrato de Carlos
 
-// 11. Verificar o Log do BC
+// (Este método já imprime seu próprio título)
 jsBanco.verLogBC();
 
 console.log("--- FIM DA SIMULAÇÃO ---");
