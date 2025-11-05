@@ -149,12 +149,14 @@ class Banco{
 class Cliente{
     nome;
     cpf;
+    agencia;
     #conta = null;
 
-    constructor(nome, cpf, banco){
+    constructor(nome, cpf, agencia){
         this.nome = nome;
         this.cpf = cpf;
-        banco.novoCliente = this;
+        this.agencia = agencia;
+        agencia.novoCliente = this; // Se registra na agência
     }
 
     set conta(contaInstance){
@@ -168,17 +170,19 @@ class Cliente{
 
 class Conta{
     agencia;
+    banco;
     numero;
     cliente;
     #saldo = 0;
     #transacoes = []; // Histórico de transações da pessoa
 
-    constructor(cliente, agencia, banco){
+    constructor(cliente, agencia){
         this.cliente = cliente;
         this.agencia = agencia;
+        this.banco = agencia.banco;
 
         // Pega o próximo número de conta do banco
-        this.numero = banco.proximoNumeroConta;
+        this.numero = this.banco.proximoNumeroConta;
 
         // Vincula esta conta ao cliente
         this.cliente.conta = this;
@@ -199,7 +203,7 @@ class Conta{
         this.#transacoes.push({data, descricao, valor });
     }
 
-    executarDeposito(valor, banco, ehTransferencia = false){
+    executarDeposito(valor, ehTransferencia = false){
         this.#saldo += valor;
 
         const descricao = ehTransferencia ? `Valor Recebido` : "Depósito";
@@ -208,11 +212,11 @@ class Conta{
         if (!ehTransferencia){
             console.log(`Depósito de R$${valor} realizado na conta ${this.numero}. Saldo: R$${this.#saldo}`);
             // Registra no BC (apenas se for depósito, senão a transferência registra)
-            banco._registrarBC("Depósito", valor, this);
+            this.banco._registrarBC("Depósito", valor, this);
         }
     }
 
-    executarSaque(valor, banco, ehTransferencia = false){
+    executarSaque(valor, ehTransferencia = false){
         if (valor > this.#saldo) {
           console.error(`Erro: Saldo insuficiente na conta ${this.numero} (Saldo: R$${this.#saldo}).`);
           return false; 
@@ -225,8 +229,8 @@ class Conta{
     
         if (!ehTransferencia) {
             console.log(`Saque de R$${valor} realizado na conta ${this.numero}. Saldo: R$${this.#saldo}`);
-            // Registra no BC (apenas se for saque, senão a transferência registra)
-            banco._registrarBC("Saque", valor, this);
+            // Usa sua referência ao banco para registrar no BC
+            this.banco._registrarBC("Saque", valor, this);
         }
         return true; 
     }
