@@ -69,11 +69,15 @@ class Banco{
     buscarConta(numeroConta){
         let contaEncontrada = null;
         for (const agencia of this.#agencias){
-            contaEncontrada = agancia.buscarConta(numeroConta);
+            contaEncontrada = agencia.buscarConta(numeroConta);
             if (contaEncontrada){
                 break;
-            }
+            }   
         }
+        if (!contaEncontrada) {
+            console.error(`Conta número ${numeroConta} não encontrada em nenhuma agência.`);
+        }
+        return contaEncontrada;
     }
 
     depositar(numeroConta, valor){
@@ -93,7 +97,7 @@ class Banco{
             console.error("Erro: Valor do saque deve ser positivo.");
             return;
         }
-        conta.executarSaque(valor, this);
+        conta.executarSaque(valor, false);
     }    
 
     transferir(numContaOrigen, numContaDestino, valor){
@@ -187,10 +191,10 @@ class Conta{
         // Vincula esta conta ao cliente
         this.cliente.conta = this;
 
-        // Registra-se no banco
-        banco.novaConta = this;
+        // Registra-se na agencia
+        agencia.novaConta = this;
 
-        console.log(`[Banco ${banco.nome}]: Conta ${this.numero} (Ag: ${this.agencia}) criada para ${this.cliente.nome}.`);
+        console.log(`[Agência ${this.agencia.nome}]: Conta ${this.numero} criada para ${this.cliente.nome}.`);
     }
 
     // Getter para o saldo (privado)
@@ -237,7 +241,7 @@ class Conta{
 
     gerarExtrato(){
         console.log(`\n--- EXTRATO: ${this.cliente.nome} ---`);
-        console.log(`Agência: ${this.agencia} | Conta: ${this.numero}`);
+        console.log(`Agência: ${this.agencia.nome} | Conta: ${this.numero}`);
         console.log("---------------------------------------");
         
         if (this.#transacoes.length === 0) {
