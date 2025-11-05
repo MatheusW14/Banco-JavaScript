@@ -32,8 +32,7 @@ class Agencia{
 }
 class Banco{
     nome;
-    #clientes = [];
-    #contas = [];
+    #agencias = [];
     #logBC = []; // Log para transações maiores que R$1000
     #proximoNumeroConta = 1;
 
@@ -42,22 +41,11 @@ class Banco{
         console.log(`Banco ${this.nome} criado com sucesso!`);
     }
 
-    set novoCliente(cliente) {
-        this.#clientes.push(cliente);
+    set novaAgencia(agencia){
+        this.#agencias.push(agencia);
+        console.log(`[Banco ${this.nome}]: Agência ${agencia.nome} registrada.`);
     }
 
-    set novaConta(conta) {
-        this.#contas.push(conta);   
-    }
-
-    get clientes(){
-        return this.#clientes;
-    }
-
-    get contas(){
-        return this.#contas;
-    }
-    
     get proximoNumeroConta(){
         return this.#proximoNumeroConta++;
     }
@@ -78,13 +66,14 @@ class Banco{
         }
     }
 
-    // Método para encontrar uma conta (usando .find em vez de Map)
     buscarConta(numeroConta){
-        const conta = this.#contas.find(c => c.numero === numeroConta);
-        if (!conta) {
-            console.error(`Conta número ${numeroConta} não encontrada.`);
+        let contaEncontrada = null;
+        for (const agencia of this.#agencias){
+            contaEncontrada = agancia.buscarConta(numeroConta);
+            if (contaEncontrada){
+                break;
+            }
         }
-        return conta;
     }
 
     depositar(numeroConta, valor){
