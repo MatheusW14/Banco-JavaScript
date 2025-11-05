@@ -83,7 +83,7 @@ class Banco{
             console.error("Erro: Valor do saque deve ser positivo.");
             return;
         }
-        conta.executarDeposito(valor, this);
+        conta.executarDeposito(valor);
     }
 
     sacar(numeroConta, valor){
@@ -106,10 +106,10 @@ class Banco{
             return;
         }
         
-        const sucessoSaque = contaOrigen.executarSaque(valor, this, true); // true = é uma transferência
+        const sucessoSaque = contaOrigen.executarSaque(valor, true); // true = é uma transferência
 
         if (sucessoSaque){
-            contaDestino.executarDeposito(valor, this, true); // true = é uma transferência
+            contaDestino.executarDeposito(valor, true); // true = é uma transferência
             console.log(`Transferência de R$${valor} da conta ${numContaOrigen} para ${numContaDestino} realizada.`);
 
             this._registrarBC('Transferência', valor, contaOrigen, contaDestino);
@@ -131,6 +131,18 @@ class Banco{
             console.table(this.#logBC);
         }
         console.log("---------------------------------------------------------\n");
+    }
+
+    visualizarEstrutura(){
+        console.log(`\n--- ESTRUTURA DO BANCO ${this.nome} ---`);
+        for (const agencia of this.#agencias){
+            console.log(`Agência: ${agencia.nome}`);
+            const clientes = agencia.clientes.map(c => c.nome);
+            console.log(`Clientes: ${clientes.length > 0 ? clientes.join(', ') : 'Nenhum'}`);
+            const contas = agencia.contas.map(c => c.numero);
+            console.log(`Contas: ${contas.length > 0 ? contas.join(', ') : 'Nenhum'}`);
+        }
+        console.log("---------------------------------------\n");
     }
 }   
 
