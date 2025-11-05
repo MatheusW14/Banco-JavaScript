@@ -258,49 +258,56 @@ class Conta{
 }
 
 
-
 console.log("--- INICIANDO SIMULAÇÃO BANCÁRIA ---");
 
 // 1. Criar o banco (o "Controlador")
 const jsBanco = new Banco("JS Bank");
 
-// 2. Criar Clientes (eles se registram no banco automaticamente)
-const alice = new Cliente("Alice Silva", "111.111.111-11", jsBanco);
-const beto = new Cliente("Beto Souza", "222.222.222-22", jsBanco);
+// 2. Criar as Agências (elas se registram no banco)
+const agCentro = new Agencia("001 - Centro", jsBanco);
+const agBairro = new Agencia("002 - Bairro", jsBanco);
 
-// 3. Criar Contas (elas se registram no banco e se vinculam ao cliente)
-// Os números das contas serão 1 e 2.
-const contaAlice = new Conta(alice, "001 - Centro", jsBanco);
-const contaBeto = new Conta(beto, "002 - Bairro", jsBanco);
+// 3. Criar Clientes (eles se registram na sua agência)
+const alice = new Cliente("Alice Silva", "111.111.111-11", agCentro);
+const beto = new Cliente("Beto Souza", "222.222.222-22", agBairro);
+// Bônus: Cliente na mesma agência
+const carlos = new Cliente("Carlos Dias", "333.333.333-33", agCentro);
 
-// 4. Verificar se o registro automático funcionou (como no seu 'cczTL.animal')
-console.log("\n--- CLIENTES REGISTRADOS ---");
-console.log(jsBanco.clientes.map(c => c.nome)); // Mostra os nomes
-console.log("\n--- CONTAS REGISTRADAS ---");
-console.log(jsBanco.contas.map(c => `Conta ${c.numero} de ${c.cliente.nome}`)); // Mostra as contas
 
+// 4. Criar Contas (elas se registram na agência)
+const contaAlice = new Conta(alice, agCentro); // Conta 1
+const contaBeto = new Conta(beto, agBairro); // Conta 2
+const contaCarlos = new Conta(carlos, agCentro); // Conta 3
+
+// 5. VISUALIZAR A ESTRUTURA (Seu objetivo!)
+jsBanco.visualizarEstrutura();
+
+// O RESTO DA SIMULAÇÃO (6 a 10) FUNCIONA EXATAMENTE IGUAL
+// Você não precisa mudar uma linha sequer das suas transações!
 console.log("\n--- INÍCIO DAS TRANSAÇÕES ---");
 
-// 5. Depósitos (Um normal, um grande para testar o BC)
-jsBanco.depositar(1, 500);    // Depósito normal na conta 1 (Alice)
-jsBanco.depositar(2, 2500);   // Depósito ALTO na conta 2 (Beto) (Deve acionar o BC)
+// 6. Depósitos
+jsBanco.depositar(1, 500);    // Alice (Conta 1)
+jsBanco.depositar(2, 2500);   // Beto (Conta 2) (Aciona o BC)
+jsBanco.depositar(3, 700);    // Carlos (Conta 3)
 
-// 6. Saque
-jsBanco.sacar(1, 100);       // Saque normal da conta 1 (Alice)
+// 7. Saque
+jsBanco.sacar(1, 100);       // Alice (Conta 1)
 
-// 7. Transferência (Uma ALTA para testar o BC)
-jsBanco.transferir(2, 1, 1500); // Beto (conta 2) transfere R$1500 para Alice (conta 1)
+// 8. Transferência
+jsBanco.transferir(2, 1, 1500); // Beto (2) -> Alice (1) (Aciona o BC)
 
-// 8. Tentativa de saque com saldo insuficiente
-jsBanco.sacar(1, 5000); // Alice (conta 1) tenta sacar R$5000 (ela não tem isso)
+// 9. Tentativa de saque com saldo insuficiente
+jsBanco.sacar(1, 5000); // Alice (1)
 
 console.log("\n--- FIM DAS TRANSAÇÕES ---");
 
-// 9. Gerar Extratos (Requisito: Extrato por cliente)
+// 10. Gerar Extratos
 jsBanco.consultarExtrato(1); // Extrato de Alice
 jsBanco.consultarExtrato(2); // Extrato de Beto
+jsBanco.consultarExtrato(3); // Extrato de Carlos
 
-// 10. Verificar o Log do BC (Requisito: BC registra > 1000)
+// 11. Verificar o Log do BC
 jsBanco.verLogBC();
 
 console.log("--- FIM DA SIMULAÇÃO ---");
