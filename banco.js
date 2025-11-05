@@ -1,3 +1,35 @@
+class Agencia{
+    nome;
+    banco; // Referência ao banco
+    #clientes = [];
+    #contas = [];
+
+    constructor(nome, banco){
+        this.nome = nome;
+        this.banco = banco; // Guarda qual e o banco
+        banco.novaAgencia = this; // Se registra no banco
+    }
+
+    set novoCliente(cliente){
+        this.#clientes.push(cliente);
+    }
+
+    set novaConta(conta){
+        this.#contas.push(conta);
+    }
+
+    buscarConta(numeroConta){
+        return this.#contas.find(c => c.numero === numeroConta);
+    }
+
+    get clientes(){
+        return this.#clientes;
+    }
+
+    get contas(){
+        return this.#contas;
+    }
+}
 class Banco{
     nome;
     #clientes = [];
