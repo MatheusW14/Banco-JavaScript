@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JS Bank - Sistema Bancário</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-page: #E6DCCF;      
+            --bg-dark: #2C333D;      
+            --bg-card: #F2EBE3;      
+            --accent-cyan: #00E5FF; 
+            --btn-blue: #1F78B4;     
+            --btn-green: #27AE60;    
+            --btn-yellow: #EBC86F;   
+            --btn-red: #C0392B;
+            --text-main: #444;      
+        }
+
+        /*  Fundo da Página */
+        body {
+            background-color: var(--bg-page) !important;
+            color: var(--text-main) !important;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding-top: 20px;
+        }
+
+        /*  Faixa Escura no Topo */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 90px; /* Altura da faixa escura */
+            background-color: var(--bg-dark);
+            z-index: -1;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        /*  Título Principal */
+        h1 {
+            color: var(--accent-cyan) !important;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-shadow: 0px 0px 15px rgba(0, 229, 255, 0.4);
+            margin-bottom: 30px;
+        }
+
+        /*  Abas (Tabs) */
+        .nav-tabs {
+            border-bottom: none;
+            margin-bottom: 20px;
+        }
+        
+        .nav-tabs .nav-link {
+            background-color: rgba(255,255,255,0.4); 
+            color: #2C333D !important;
+            border: none;
+            border-radius: 6px;
+            margin-right: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .nav-tabs .nav-link:hover {
+            background-color: rgba(255,255,255,0.8);
+        }
+
+        .nav-tabs .nav-link.active {
+            background-color: var(--btn-blue) !important;
+            color: white !important;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            transform: translateY(-2px);
+        }
+
+        /*  Cartões (Cards) */
+        .card {
+            background-color: var(--bg-card) !important;
+            border: 1px solid rgba(0,0,0,0.08);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1); /* Sombra suave e profunda */
+            border-radius: 10px;
+        }
+
+        .card-header {
+            background-color: var(--bg-dark) !important;
+            color: white !important;
+            border-bottom: none;
+            padding: 15px;
+            border-radius: 10px 10px 0 0 !important;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        /* Cabeçalhos coloridos para Cadastros */
+        .header-verde { background-color: var(--btn-green) !important; }
+        .header-azul { background-color: var(--btn-blue) !important; }
+
+        /*  Inputs e Formulários */
+        .form-control, .form-select {
+            background-color: #FAF6F0;
+            border: 1px solid #D1C7B7;
+            color: #333;
+            padding: 10px;
+        }
+        .form-control:focus, .form-select:focus {
+            background-color: #fff;
+            border-color: var(--btn-blue);
+            box-shadow: 0 0 0 0.2rem rgba(31, 120, 180, 0.2);
+        }
+
+        /*  Botões */
+        .btn { padding: 10px; font-weight: 500; }
+        
+        .btn-primary {
+            background-color: var(--btn-blue);
+            border: none;
+        }
+        .btn-primary:hover { background-color: #155F8E; }
+
+        .btn-success {
+            background-color: var(--btn-green);
+            border: none;
+        }
+        .btn-success:hover { background-color: #1E8449; }
+        
+        /* Botões Específicos de Relatório */
+        #btn-ver-estrutura {
+            background-color: var(--btn-yellow) !important;
+            color: #444;
+            border: none;
+        }
+        #btn-ver-logbc {
+            background-color: var(--btn-red) !important;
+            color: white;
+            border: none;
+        }
+
+        /*  Terminal de Logs */
+        #display-terminal {
+            height: 70vh;
+            background-color: var(--bg-dark);
+            color: #61dafb;
+            font-family: 'Consolas', 'Monaco', monospace;
+            padding: 20px;
+            border-radius: 0 0 10px 10px;
+            border: none;
+            font-size: 0.9rem;
+        }
+
+        /*  Listas (Aba 3) */
+        .lista-item {
+            background-color: #fff;
+            border-left: 5px solid var(--btn-blue);
+            padding: 15px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>JS Bank</h1>
+
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="operacoes-tab" data-bs-toggle="tab" data-bs-target="#operacoes-pane" type="button" role="tab">Operações</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="cadastros-tab" data-bs-toggle="tab" data-bs-target="#cadastros-pane" type="button" role="tab">Cadastros</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="listagem-tab" data-bs-toggle="tab" data-bs-target="#listagem-pane" type="button" role="tab">Listagem Geral</button>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="myTabContent">
+            
+            <div class="tab-pane fade show active" id="operacoes-pane" role="tabpanel" tabindex="0">
+                <div class="row g-4 pb-4">
+                    <div class="col-lg-5">
+                        <div class="card h-100">
+                            <div class="card-header">Ações</div>
+                            <div class="card-body">
+                                <form id="form-deposito" class="mb-3">
+                                    <label class="form-label fw-bold text-secondary small">Depositar</label>
+                                    <div class="input-group mb-2">
+                                        <input type="number" id="deposito-conta" class="form-control" placeholder="Conta" required>
+                                        <input type="number" id="deposito-valor" class="form-control" placeholder="Valor" step="0.01" required>
+                                        <button type="submit" class="btn btn-primary">OK</button>
+                                    </div>
+                                </form>
+                                <hr>
+                                <form id="form-saque" class="mb-3">
+                                    <label class="form-label fw-bold text-secondary small">Sacar</label>
+                                    <div class="input-group mb-2">
+                                        <input type="number" id="saque-conta" class="form-control" placeholder="Conta" required>
+                                        <input type="number" id="saque-valor" class="form-control" placeholder="Valor" step="0.01" required>
+                                        <button type="submit" class="btn btn-primary">OK</button>
+                                    </div>
+                                </form>
+                                <hr>
+                                <form id="form-transferir" class="mb-3">
+                                    <label class="form-label fw-bold text-secondary small">Transferir (PIX)</label>
+                                    <div class="mb-2"><input type="number" id="transf-origem" class="form-control" placeholder="Conta Origem" required></div>
+                                    <div class="input-group mb-2">
+                                        <input type="number" id="transf-destino" class="form-control" placeholder="Conta Destino" required>
+                                        <input type="number" id="transf-valor" class="form-control" placeholder="Valor" step="0.01" required>
+                                        <button type="submit" class="btn btn-primary">OK</button>
+                                    </div>
+                                </form>
+                                <hr>
+                                <div class="relatorios">
+                                    <label class="form-label fw-bold text-secondary small">Relatórios (Console)</label>
+                                    <div class="input-group mb-2">
+                                        <input type="number" id="extrato-conta" class="form-control" placeholder="Nº da Conta">
+                                        <button id="btn-extrato" class="btn btn-secondary" type="button">Extrato</button>
+                                    </div>
+                                    <div class="d-flex gap-2 mt-3">
+                                        <button id="btn-ver-estrutura" class="btn w-50" type="button">Log Estrutura</button>
+                                        <button id="btn-ver-logbc" class="btn w-50" type="button">Log BC</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-7">
+                        <div class="card h-100">
+                            <div class="card-header">Terminal de Logs</div>
+                            <div class="card-body p-0">
+                                <pre id="display-terminal"></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="cadastros-pane" role="tabpanel" tabindex="0">
+                <div class="row g-4 pb-4">
+                    
+                    <div class="col-md-6">
+                        <div class="card h-100">
+                            <div class="card-header header-verde">1º Cadastrar Agência</div>
+                            <div class="card-body d-flex flex-column justify-content-center">
+                                <form id="form-agencia">
+                                    <div class="mb-4">
+                                        <label for="agencia-nome" class="form-label">Nome da Agência</label>
+                                        <input type="text" id="agencia-nome" class="form-control form-control-lg" placeholder="Ex: Centro, Digital..." required>
+                                    </div>
+                                    <button type="submit" class="btn btn-success w-100 py-3">Criar Agência</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="card h-100">
+                            <div class="card-header header-azul">2º Cadastrar Cliente</div>
+                            <div class="card-body">
+                                <form id="form-cadastro">
+                                    <div class="mb-3">
+                                        <label for="cadastro-nome" class="form-label">Nome Completo</label>
+                                        <input type="text" id="cadastro-nome" class="form-control" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="cadastro-cpf" class="form-label">CPF</label>
+                                        <input type="text" id="cadastro-cpf" class="form-control" required>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label for="cadastro-agencia" class="form-label">Selecione a Agência</label>
+                                        <select id="cadastro-agencia" class="form-select" required>
+                                            <option value="" disabled selected>Carregando agências...</option>
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary w-100 py-3">Cadastrar Cliente</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="listagem-pane" role="tabpanel" tabindex="0">
+                <div class="pb-4">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <span>Visão Geral do Sistema</span>
+                            <button id="btn-atualizar-listas" class="btn btn-sm btn-light text-dark">Atualizar Dados</button>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-4 border-end">
+                                    <div id="lista-banco" class="mb-4"></div>
+                                    <div id="lista-agencias"></div>
+                                </div>
+                                <div class="col-md-8">
+                                    <div id="lista-clientes-contas" style="max-height: 600px; overflow-y: auto;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div> 
+    </div> 
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
